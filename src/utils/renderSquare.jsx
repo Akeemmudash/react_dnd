@@ -1,10 +1,30 @@
+import { BoardSquare } from "../components/BoardSquare";
 import { Knight } from "../components/Knight";
-import { Square } from "../components/Square";
+import { canMoveKnight, moveKnight } from "../services/Game";
 
-export function renderSquare(x, y, [knightX, knightY]) {
-  const black = (x + y) % 2 === 1;
-  const isKnightHere = knightX === knightY;
-  const piece = isKnightHere ? <Knight /> : null;
+export function renderSquare(i, knightPosition) {
+  const x = i % 8;
+  const y = Math.floor(i / 8);
 
-  return <Square black={black}>{piece}/</Square>;
+  return (
+    <div
+      key={i}
+      onClick={() => handleSquareClick(x, y)}
+      style={{ width: "12.5%", aspectRatio: "1/1" }}
+    >
+      {
+        <BoardSquare x={x} y={y}>
+          {renderPiece(x, y, knightPosition)}
+        </BoardSquare>
+      }
+    </div>
+  );
+}
+function handleSquareClick(toX, toY) {
+  if (canMoveKnight(toX, toY)) moveKnight(toX, toY);
+}
+function renderPiece(x, y, [knightX, knightY]) {
+  if (x === knightX && y === knightY) {
+    return <Knight />;
+  }
 }
